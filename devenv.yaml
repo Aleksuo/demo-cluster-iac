@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://devenv.sh/devenv.schema.json
+inputs:
+  nixpkgs:
+    url: github:cachix/devenv-nixpkgs/rolling
+  nix-pkgs-opentofu-1_10_6:
+    url: github:NixOS/nixpkgs/47aa645be61601979fd9de9e2192aa863c9912d6
+
+# If you're using non-OSS software, you can set allowUnfree to true.
+# allowUnfree: true
+
+# If you're willing to use a package that's vulnerable
+# permittedInsecurePackages:
+#  - "openssl-1.1.1w"
+
+# If you have more than one devenv you can merge them
+#imports:
+# - ./backend

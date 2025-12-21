@@ -8,7 +8,12 @@ in
   env.GREET = "devenv";
 
   # https://devenv.sh/packages/
-  packages = [ pkgs.git ];
+  packages = [ 
+    pkgs.git
+    pkgs.kubectl
+    pkgs.kubectx
+   ];
+
 
   # https://devenv.sh/languages/
   # languages.rust.enable = true;
@@ -23,6 +28,8 @@ in
 
   languages.opentofu.enable = true;
   languages.opentofu.package = otfPkgs.opentofu;
+
+  scripts.kubesync.exec = ''bash scripts/kubeconfig-sync.sh'';
 
   scripts.hello.exec = ''
     echo hello from $GREET

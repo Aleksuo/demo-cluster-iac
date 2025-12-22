@@ -10,6 +10,7 @@ data "template_file" "master-node-config" {
     template = file("${path.module}/config/cloud-init-master.yaml")
     vars = {
       local_ssh_public_key = file("${path.module}/.ssh/local_ssh.pub")
+      local_ssh_public_key_2 = file("${path.module}/.ssh/local_ssh2.pub")
       worker_ssh_public_key = tls_private_key.worker-ssh-key.public_key_openssh
       hcloud_token = var.hcloud_token
       hcloud_network = hcloud_network.private_network.id

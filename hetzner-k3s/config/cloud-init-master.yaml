@@ -9,6 +9,7 @@ users:
     shell: /bin/bash
     ssh_authorized_keys:
       - ${local_ssh_public_key}
+      - ${local_ssh_public_key_2}
       - ${worker_ssh_public_key}
 
 runcmd:

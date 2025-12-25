@@ -7,13 +7,15 @@ in
   # https://devenv.sh/basics/
   env.GREET = "devenv";
 
+
   # https://devenv.sh/packages/
   packages = [ 
     pkgs.git
     pkgs.kubectl
     pkgs.kubectx
+    pkgs.talosctl
+    pkgs.packer
    ];
-
 
   # https://devenv.sh/languages/
   # languages.rust.enable = true;
@@ -29,15 +31,18 @@ in
   languages.opentofu.enable = true;
   languages.opentofu.package = otfPkgs.opentofu;
 
-  scripts.kubesync.exec = ''bash scripts/kubeconfig-sync.sh'';
+  languages.helm.enable = true;
 
-  scripts.hello.exec = ''
-    echo hello from $GREET
+  scripts.init-cluster.exec = ''
+    (cd infra && tofu apply)
+    (cd infra && tofu output -raw talosconfig > ../.talosconfig)
+    talosctl --talosconfig ./.talosconfig kubeconfig --merge --force
+    ./scripts/bootstrap-cilium.sh
+    talosctl --talosconfig ./.talosconfig health
   '';
 
-  enterShell = ''
-    hello
-    git --version
+  scripts.destroy-cluster.exec = ''
+    (cd infra && tofu destroy)
   '';
 
   # https://devenv.sh/tasks/

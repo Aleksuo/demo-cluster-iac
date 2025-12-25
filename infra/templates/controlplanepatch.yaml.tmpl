@@ -16,3 +16,9 @@ machine:
           - 0.de.pool.ntp.org
           - 1.de.pool.ntp.org
           - time.cloudflare.com
+cluster:
+  network:
+    cni:
+      name: none
+  proxy:
+    disabled: true

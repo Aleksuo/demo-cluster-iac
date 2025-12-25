@@ -38,6 +38,7 @@ in
     (cd infra && tofu output -raw talosconfig > ../.talosconfig)
     talosctl --talosconfig ./.talosconfig kubeconfig --merge --force
     ./scripts/bootstrap-cilium.sh
+    secretspec run -- ./scripts/bootstrap-hetzner-ccm.sh
     talosctl --talosconfig ./.talosconfig health
   '';
 

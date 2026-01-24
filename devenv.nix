@@ -2,6 +2,9 @@
 
 let 
   otfPkgs = inputs.nix-pkgs-opentofu-1_10_6.legacyPackages.${pkgs.stdenv.system};
+  pkgsUnstable = import inputs.nixpkgs-unstable {
+    system = pkgs.stdenv.system;
+  };
 in   
 {
   # https://devenv.sh/basics/
@@ -15,10 +18,11 @@ in
     pkgs.kubectx
     pkgs.talosctl
     pkgs.packer
+    pkgsUnstable.secretspec
    ];
 
   # https://devenv.sh/languages/
-  # languages.rust.enable = true;
+  #languages.rust.enable = true;
 
   # https://devenv.sh/processes/
   # processes.cargo-watch.exec = "cargo-watch";

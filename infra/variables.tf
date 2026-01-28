@@ -1,7 +1,3 @@
-variable "hcloud_token" {
-  sensitive = true
-}
-
 variable "image_id" {
   description = "The id of the saved talos snapshot in hetzner"
   type        = string

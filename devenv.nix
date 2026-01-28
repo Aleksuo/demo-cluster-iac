@@ -33,17 +33,21 @@ in
 
   languages.helm.enable = true;
 
-  scripts.init-cluster.exec = ''
-    (cd infra && tofu apply)
-    (cd infra && tofu output -raw talosconfig > ../.talosconfig)
+  scripts.plan.exec = ''
+    secretspec run -- tofu -chdir=infra plan
+  '';
+
+  scripts.apply.exec = ''
+    secretspec run -- tofu -chdir=infra apply
+    tofu -chdir=infra output -raw talosconfig > ./.talosconfig
     talosctl --talosconfig ./.talosconfig kubeconfig --merge --force
     ./scripts/bootstrap-cilium.sh
     secretspec run -- ./scripts/bootstrap-hetzner-ccm.sh
     talosctl --talosconfig ./.talosconfig health
   '';
 
-  scripts.destroy-cluster.exec = ''
-    (cd infra && tofu destroy)
+  scripts.destroy.exec = ''
+    secretspec run -- tofu -chdir=infra destroy
   '';
 
   # https://devenv.sh/tasks/

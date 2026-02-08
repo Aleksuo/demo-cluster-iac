@@ -1,0 +1,24 @@
+#cloud-config
+package_update: true
+packages:
+  - iptables
+  - iptables-persistent
+  - curl
+
+runcmd:
+  - |
+    set -eux
+    SUBNET='${private_network_subnet_range}'
+
+    PUB_IFACE="$(ip -o -4 route show to default | awk '{print $5; exit}')"
+
+    printf "net.ipv4.ip_forward=1\n" > /etc/sysctl.d/99-forward.conf
+    sysctl --system
+
+    iptables -P FORWARD ACCEPT
+    iptables -t nat -A POSTROUTING -s "$SUBNET" -o "$PUB_IFACE" -j MASQUERADE
+
+    netfilter-persistent save
+
+    curl -fsSL https://tailscale.com/install.sh | sh
+    tailscale up --advertise-routes="$SUBNET" --auth-key='${tailscale_auth_key}'

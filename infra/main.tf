@@ -8,7 +8,12 @@ terraform {
       source  = "siderolabs/talos"
       version = "0.10.0-beta.0"
     }
+    tailscale = {
+      source = "tailscale/tailscale"
+      version = "0.26.0"
+    }
   }
 }
 
 provider "hcloud" {}
+provider "tailscale" {}

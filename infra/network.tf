@@ -14,18 +14,18 @@ resource "hcloud_network_subnet" "private_network_subnet" {
 resource "tailscale_acl" "nat_gateway_acl" {
   overwrite_existing_content = true
   acl = jsonencode({
-    tagOwners = { "tag:gateway" = ["autogroup:admin"] }
+    tagOwners     = { "tag:gateway" = ["autogroup:admin"] }
     autoApprovers = { routes = { (var.private_network_subnet_range) = ["tag:gateway"] } }
-    acls = [{ action = "accept", src = ["autogroup:admin"], dst = ["*:*"] }]
+    acls          = [{ action = "accept", src = ["autogroup:admin"], dst = ["*:*"] }]
   })
 }
 
 resource "tailscale_tailnet_key" "nat_gateway_key" {
-  description = "nat-gateway bootstrap key"
+  description   = "nat-gateway bootstrap key"
   preauthorized = true
-  ephemeral = true
-  expiry = 3600
-  reusable = false
-  tags = ["tag:gateway"]
-  depends_on = [ tailscale_acl.nat_gateway_acl ]
+  ephemeral     = true
+  expiry        = 3600
+  reusable      = false
+  tags          = ["tag:gateway"]
+  depends_on    = [tailscale_acl.nat_gateway_acl]
 }

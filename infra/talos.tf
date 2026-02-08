@@ -10,9 +10,9 @@ data "talos_machine_configuration" "controlplane" {
   talos_version      = var.talos_version_contract
   kubernetes_version = var.kubernetes_version
   config_patches = [templatefile("${path.module}/templates/controlplanepatch.yaml.tmpl", {
-    loadbalancerip = hcloud_load_balancer_network.srvnetwork.ip,
-    subnet = var.private_network_subnet_range,
-    pod_subnet_cidr = var.pod_subnet_cidr,
+    loadbalancerip      = hcloud_load_balancer_network.srvnetwork.ip,
+    subnet              = var.private_network_subnet_range,
+    pod_subnet_cidr     = var.pod_subnet_cidr,
     service_subnet_cidr = var.service_subnet_cidr
     })
   ]
@@ -27,7 +27,7 @@ data "talos_client_configuration" "this" {
   endpoints = [
     hcloud_load_balancer_network.srvnetwork.ip
   ]
-  nodes = [ hcloud_load_balancer_network.srvnetwork.ip ]
+  nodes = [hcloud_load_balancer_network.srvnetwork.ip]
 }
 
 resource "hcloud_server" "controlplane_server" {
@@ -67,8 +67,8 @@ data "talos_machine_configuration" "worker" {
   kubernetes_version = var.kubernetes_version
   config_patches = [
     templatefile("${path.module}/templates/workerpatch.yaml.tmpl", {
-      subnet = var.private_network_subnet_range
-      pod_subnet_cidr = var.pod_subnet_cidr,
+      subnet              = var.private_network_subnet_range
+      pod_subnet_cidr     = var.pod_subnet_cidr,
       service_subnet_cidr = var.service_subnet_cidr
     })
   ]
@@ -94,9 +94,9 @@ resource "hcloud_server" "worker_server" {
     network_id = hcloud_network.private_network.id
   }
   depends_on = [
-    hcloud_network_subnet.private_network_subnet, 
-    hcloud_load_balancer.controlplane_load_balancer, 
-    hcloud_server.controlplane_server]
+    hcloud_network_subnet.private_network_subnet,
+    hcloud_load_balancer.controlplane_load_balancer,
+  hcloud_server.controlplane_server]
 }
 
 

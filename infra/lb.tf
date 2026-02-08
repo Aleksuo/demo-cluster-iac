@@ -9,10 +9,10 @@ resource "hcloud_load_balancer" "controlplane_load_balancer" {
 }
 
 resource "hcloud_load_balancer_network" "srvnetwork" {
-  load_balancer_id = hcloud_load_balancer.controlplane_load_balancer.id
-  network_id       = hcloud_network.private_network.id
+  load_balancer_id        = hcloud_load_balancer.controlplane_load_balancer.id
+  network_id              = hcloud_network.private_network.id
   enable_public_interface = false
-  ip = local.lb_ip
+  ip                      = local.lb_ip
 }
 
 resource "hcloud_load_balancer_target" "control_plane_target" {

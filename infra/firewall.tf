@@ -1,7 +1,7 @@
 resource "hcloud_firewall" "nat_gateway_firewall" {
   name = "${var.cluster_name}-nat-gateway"
 
-   rule {
+  rule {
     direction  = "in"
     protocol   = "tcp"
     port       = "any"

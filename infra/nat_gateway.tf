@@ -3,16 +3,16 @@ locals {
 }
 
 resource "hcloud_server" "nat_gateway" {
-  name = "${var.cluster_name}-nat-gateway"
-  image = "ubuntu-24.04"
+  name        = "${var.cluster_name}-nat-gateway"
+  image       = "ubuntu-24.04"
   server_type = "cx23"
-  location = var.location
+  location    = var.location
 
   firewall_ids = [hcloud_firewall.nat_gateway_firewall.id]
 
   network {
     network_id = hcloud_network.private_network.id
-    ip = local.nat_ip
+    ip         = local.nat_ip
   }
 
   user_data = templatefile("${path.module}/cloud-init/nat-gateway.yaml.tftpl", {
@@ -20,12 +20,12 @@ resource "hcloud_server" "nat_gateway" {
     tailscale_auth_key           = tailscale_tailnet_key.nat_gateway_key.key
   })
 
-  depends_on = [ tailscale_acl.nat_gateway_acl ]
+  depends_on = [tailscale_acl.nat_gateway_acl]
 }
 
 resource "hcloud_network_route" "default_via_nat" {
-  network_id = hcloud_network.private_network.id
+  network_id  = hcloud_network.private_network.id
   destination = "0.0.0.0/0"
-  gateway = local.nat_ip
-  depends_on = [ hcloud_server.nat_gateway ]
+  gateway     = local.nat_ip
+  depends_on  = [hcloud_server.nat_gateway]
 }

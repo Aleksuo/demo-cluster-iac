@@ -4,17 +4,20 @@ resource "talos_machine_secrets" "this" {
 
 data "talos_machine_configuration" "controlplane" {
   cluster_name       = var.cluster_name
-  cluster_endpoint   = "https://${hcloud_load_balancer.controlplane_load_balancer.ipv4}:6443"
+  cluster_endpoint   = "https://${hcloud_load_balancer_network.srvnetwork.ip}:6443"
   machine_type       = "controlplane"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
   talos_version      = var.talos_version_contract
   kubernetes_version = var.kubernetes_version
   config_patches = [templatefile("${path.module}/templates/controlplanepatch.yaml.tmpl", {
-    loadbalancerip = hcloud_load_balancer.controlplane_load_balancer.ipv4, subnet = var.private_network_subnet_range
+    loadbalancerip = hcloud_load_balancer_network.srvnetwork.ip,
+    subnet = var.private_network_subnet_range,
+    pod_subnet_cidr = var.pod_subnet_cidr,
+    service_subnet_cidr = var.service_subnet_cidr
     })
   ]
   depends_on = [
-    hcloud_load_balancer.controlplane_load_balancer
+    hcloud_load_balancer_network.srvnetwork
   ]
 }
 
@@ -22,9 +25,9 @@ data "talos_client_configuration" "this" {
   cluster_name         = var.cluster_name
   client_configuration = talos_machine_secrets.this.client_configuration
   endpoints = [
-    hcloud_load_balancer.controlplane_load_balancer.ipv4
+    hcloud_load_balancer_network.srvnetwork.ip
   ]
-  nodes = [ hcloud_load_balancer.controlplane_load_balancer.ipv4 ]
+  nodes = [ hcloud_load_balancer_network.srvnetwork.ip ]
 }
 
 resource "hcloud_server" "controlplane_server" {
@@ -34,11 +37,15 @@ resource "hcloud_server" "controlplane_server" {
   location    = var.location
   labels      = { type = "talos-controlplane" }
   user_data   = data.talos_machine_configuration.controlplane.machine_configuration
+  public_net {
+    ipv4_enabled = false
+    ipv6_enabled = false
+  }
   network {
     network_id = hcloud_network.private_network.id
-    ip         = var.controlplane_ip
   }
   depends_on = [
+    hcloud_network_route.default_via_nat,
     hcloud_network_subnet.private_network_subnet,
     hcloud_load_balancer.controlplane_load_balancer,
     talos_machine_secrets.this
@@ -47,13 +54,13 @@ resource "hcloud_server" "controlplane_server" {
 
 resource "talos_machine_bootstrap" "bootstrap" {
   client_configuration = talos_machine_secrets.this.client_configuration
-  endpoint             = hcloud_server.controlplane_server.ipv4_address
-  node                 = hcloud_server.controlplane_server.ipv4_address
+  endpoint             = tolist(hcloud_server.controlplane_server.network)[0].ip
+  node                 = tolist(hcloud_server.controlplane_server.network)[0].ip
 }
 
 data "talos_machine_configuration" "worker" {
   cluster_name       = var.cluster_name
-  cluster_endpoint   = "https://${hcloud_load_balancer.controlplane_load_balancer.ipv4}:6443"
+  cluster_endpoint   = "https://${hcloud_load_balancer_network.srvnetwork.ip}:6443"
   machine_type       = "worker"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
   talos_version      = var.talos_version_contract
@@ -61,10 +68,12 @@ data "talos_machine_configuration" "worker" {
   config_patches = [
     templatefile("${path.module}/templates/workerpatch.yaml.tmpl", {
       subnet = var.private_network_subnet_range
+      pod_subnet_cidr = var.pod_subnet_cidr,
+      service_subnet_cidr = var.service_subnet_cidr
     })
   ]
   depends_on = [
-    hcloud_load_balancer.controlplane_load_balancer
+    hcloud_load_balancer_network.srvnetwork
   ]
 }
 
@@ -77,14 +86,21 @@ resource "hcloud_server" "worker_server" {
   location    = each.value.location
   labels      = { type = "talos-worker" }
   user_data   = data.talos_machine_configuration.worker.machine_configuration
+  public_net {
+    ipv4_enabled = false
+    ipv6_enabled = false
+  }
   network {
     network_id = hcloud_network.private_network.id
   }
-  depends_on = [hcloud_network_subnet.private_network_subnet, hcloud_load_balancer.controlplane_load_balancer, hcloud_server.controlplane_server]
+  depends_on = [
+    hcloud_network_subnet.private_network_subnet, 
+    hcloud_load_balancer.controlplane_load_balancer, 
+    hcloud_server.controlplane_server]
 }
 
 
 resource "talos_cluster_kubeconfig" "this" {
   client_configuration = talos_machine_secrets.this.client_configuration
-  node                 = hcloud_server.controlplane_server.ipv4_address
+  node                 = hcloud_load_balancer_network.srvnetwork.ip
 }

@@ -10,7 +10,6 @@ variable "cluster_name" {
   default     = "talos-hcloud-cluster"
 }
 
-
 variable "talos_version_contract" {
   type    = string
   default = "v1.11"
@@ -21,29 +20,31 @@ variable "kubernetes_version" {
   default = "1.34.2"
 }
 
-# controlplane
 variable "controlplane_type" {
   default = "cx23"
 }
 
-variable "controlplane_ip" {
-  default = "10.0.0.3"
-}
-
-# network
 variable "private_network_name" {
   default = "talos-network"
 }
 
 variable "private_network_ip_range" {
-  default = "10.0.0.0/16"
+  default = "172.20.0.0/16"
 }
 
 variable "private_network_subnet_range" {
-  default = "10.0.0.0/24"
+  default = "172.20.0.0/22"
 }
 
-# lb
+variable "pod_subnet_cidr" {
+  default = "10.240.0.0/16"
+}
+
+variable "service_subnet_cidr" {
+  default = "10.241.0.0/16"
+}
+
+
 variable "network_zone" {
   default = "eu-central"
 }

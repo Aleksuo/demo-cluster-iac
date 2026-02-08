@@ -33,6 +33,10 @@ in
 
   languages.helm.enable = true;
 
+  scripts.init.exec = ''
+    secretspec run -- tofu -chdir=infra init
+  '';
+
   scripts.plan.exec = ''
     secretspec run -- tofu -chdir=infra plan
   '';

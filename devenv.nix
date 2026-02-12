@@ -55,6 +55,10 @@ in
     secretspec run -- tofu -chdir=infra destroy
   '';
 
+  scripts.gitleaks-check.exec = ''
+    gitleaks detect --source . --redact --verbose --log-opts="--all"
+  '';
+
   # https://devenv.sh/tasks/
   # tasks = {
   #   "myproj:setup".exec = "mytool build";

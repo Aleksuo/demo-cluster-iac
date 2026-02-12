@@ -14,6 +14,7 @@ in
     pkgs.kubectx
     pkgs.talosctl
     pkgs.packer
+    pkgs.gitleaks
     pkgsUnstable.secretspec
    ];
 
@@ -68,6 +69,15 @@ in
 
   # https://devenv.sh/git-hooks/
   # git-hooks.hooks.shellcheck.enable = true;
+
+  git-hooks.hooks.gitleaks = {
+    enable = true;
+    name = "gitleaks (staged)";
+    entry = "${pkgs.gitleaks}/bin/gitleaks protect --staged --redact";
+    language = "system";
+    stages = [ "pre-commit" ];
+    pass_filenames = false;
+  };
 
   # See full reference at https://devenv.sh/reference/options/
 }

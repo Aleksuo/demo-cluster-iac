@@ -68,3 +68,9 @@ variable "workers" {
     }
   }
 }
+
+variable "split_dns_domain" {
+  description = "Domain suffix to resolve via the NAT gateway DNS resolver"
+  type        = string
+  default     = "internal.aleksuo.dev"
+}

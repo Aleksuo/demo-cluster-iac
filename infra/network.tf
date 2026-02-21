@@ -21,11 +21,18 @@ resource "tailscale_acl" "nat_gateway_acl" {
 }
 
 resource "tailscale_tailnet_key" "nat_gateway_key" {
-  description   = "nat-gateway bootstrap key"
-  preauthorized = true
-  ephemeral     = true
-  expiry        = 3600
-  reusable      = false
-  tags          = ["tag:gateway"]
-  depends_on    = [tailscale_acl.nat_gateway_acl]
+  description         = "nat-gateway bootstrap key"
+  preauthorized       = true
+  ephemeral           = true
+  expiry              = 3600
+  reusable            = true
+  recreate_if_invalid = "always"
+  tags                = ["tag:gateway"]
+  depends_on          = [tailscale_acl.nat_gateway_acl]
+}
+
+resource "tailscale_dns_split_nameservers" "cluster_internal" {
+  domain      = var.split_dns_domain
+  nameservers = [local.nat_ip]
+  depends_on  = [tailscale_acl.nat_gateway_acl]
 }

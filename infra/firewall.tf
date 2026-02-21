@@ -14,4 +14,11 @@ resource "hcloud_firewall" "nat_gateway_firewall" {
     port       = "any"
     source_ips = [var.private_network_subnet_range]
   }
+
+  rule {
+    direction  = "in"
+    protocol   = "udp"
+    port       = "41641"
+    source_ips = ["0.0.0.0/0"]
+  }
 }

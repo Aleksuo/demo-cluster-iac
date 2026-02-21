@@ -1,7 +1,7 @@
 variable "image_id" {
   description = "The id of the saved talos snapshot in hetzner"
   type        = string
-  default     = "343755526"
+  default     = "359836194"
 }
 
 variable "cluster_name" {

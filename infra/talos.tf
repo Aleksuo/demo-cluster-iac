@@ -119,9 +119,3 @@ data "talos_client_configuration" "all" {
   endpoints            = [local.lb_ip]
   nodes                = local.talos_nodes
 }
-
-
-resource "talos_cluster_kubeconfig" "this" {
-  client_configuration = talos_machine_secrets.this.client_configuration
-  node                 = local.cp_ip
-}

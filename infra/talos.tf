@@ -1,3 +1,11 @@
+locals {
+  cp_ip = tolist(hcloud_server.controlplane_server.network)[0].ip
+  worker_ips = [
+    for s in values(hcloud_server.worker_server) : tolist(s.network)[0].ip
+  ]
+  talos_nodes = concat([local.cp_ip], local.worker_ips)
+}
+
 resource "talos_machine_secrets" "this" {
   talos_version = var.talos_version_contract
 }
@@ -24,10 +32,8 @@ data "talos_machine_configuration" "controlplane" {
 data "talos_client_configuration" "this" {
   cluster_name         = var.cluster_name
   client_configuration = talos_machine_secrets.this.client_configuration
-  endpoints = [
-    hcloud_load_balancer_network.srvnetwork.ip
-  ]
-  nodes = [hcloud_load_balancer_network.srvnetwork.ip]
+  endpoints            = [local.lb_ip]
+  nodes                = [local.cp_ip]
 }
 
 resource "hcloud_server" "controlplane_server" {
@@ -54,8 +60,9 @@ resource "hcloud_server" "controlplane_server" {
 
 resource "talos_machine_bootstrap" "bootstrap" {
   client_configuration = talos_machine_secrets.this.client_configuration
-  endpoint             = tolist(hcloud_server.controlplane_server.network)[0].ip
-  node                 = tolist(hcloud_server.controlplane_server.network)[0].ip
+  endpoint             = local.cp_ip
+  node                 = local.cp_ip
+  depends_on           = [hcloud_server.controlplane_server]
 }
 
 data "talos_machine_configuration" "worker" {
@@ -99,8 +106,15 @@ resource "hcloud_server" "worker_server" {
   hcloud_server.controlplane_server]
 }
 
+data "talos_client_configuration" "all" {
+  cluster_name         = var.cluster_name
+  client_configuration = talos_machine_secrets.this.client_configuration
+  endpoints            = [local.lb_ip]
+  nodes                = local.talos_nodes
+}
+
 
 resource "talos_cluster_kubeconfig" "this" {
   client_configuration = talos_machine_secrets.this.client_configuration
-  node                 = hcloud_load_balancer_network.srvnetwork.ip
+  node                 = local.cp_ip
 }

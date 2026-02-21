@@ -25,8 +25,7 @@ resource "tailscale_tailnet_key" "nat_gateway_key" {
   preauthorized       = true
   ephemeral           = true
   expiry              = 3600
-  reusable            = true
-  recreate_if_invalid = "always"
+  reusable            = false
   tags                = ["tag:gateway"]
   depends_on          = [tailscale_acl.nat_gateway_acl]
 }

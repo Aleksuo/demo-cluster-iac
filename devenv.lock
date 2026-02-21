@@ -87,6 +87,21 @@
         "type": "github"
       }
     },
+    "nix-pkgs-talosctl-1_11_5": {
+      "locked": {
+        "lastModified": 1765386589,
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "567e8dfd8eddc5468e6380fc563ab8a27422ab1d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "567e8dfd8eddc5468e6380fc563ab8a27422ab1d",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1767052823,
@@ -122,6 +137,7 @@
         "devenv": "devenv",
         "git-hooks": "git-hooks",
         "nix-pkgs-opentofu-1_10_6": "nix-pkgs-opentofu-1_10_6",
+        "nix-pkgs-talosctl-1_11_5": "nix-pkgs-talosctl-1_11_5",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "pre-commit-hooks": [

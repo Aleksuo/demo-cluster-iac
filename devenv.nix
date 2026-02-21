@@ -2,6 +2,7 @@
 
 let 
   otfPkgs = inputs.nix-pkgs-opentofu-1_10_6.legacyPackages.${pkgs.stdenv.system};
+  talosctlPkgs = inputs.nix-pkgs-talosctl-1_11_5.legacyPackages.${pkgs.stdenv.system};
   pkgsUnstable = import inputs.nixpkgs-unstable {
     system = pkgs.stdenv.system;
   };
@@ -12,7 +13,7 @@ in
     pkgs.git
     pkgs.kubectl
     pkgs.kubectx
-    pkgs.talosctl
+    talosctlPkgs.talosctl
     pkgs.packer
     pkgs.gitleaks
     pkgsUnstable.secretspec
@@ -33,6 +34,11 @@ in
   languages.opentofu.package = otfPkgs.opentofu;
 
   languages.helm.enable = true;
+
+  scripts.pack-image.exec = ''
+    secretspec run -- packer init ./packer
+    secretspec run -- packer build ./packer
+  '';
 
   scripts.init.exec = ''
     secretspec run -- tofu -chdir=infra init

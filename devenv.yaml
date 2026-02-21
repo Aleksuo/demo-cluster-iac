@@ -4,6 +4,8 @@ inputs:
     url: github:cachix/devenv-nixpkgs/rolling
   nix-pkgs-opentofu-1_10_6:
     url: github:NixOS/nixpkgs/47aa645be61601979fd9de9e2192aa863c9912d6
+  nix-pkgs-talosctl-1_11_5:
+    url: github:NixOS/nixpkgs/567e8dfd8eddc5468e6380fc563ab8a27422ab1d
   nixpkgs-unstable:
     url: github:NixOS/nixpkgs/nixpkgs-unstable
 

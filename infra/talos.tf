@@ -1,7 +1,11 @@
 locals {
-  cp_ip = tolist(hcloud_server.controlplane_server.network)[0].ip
+  cp_ip = cidrhost(var.private_network_subnet_range, 2)
+  worker_ip_by_key = {
+    for idx, k in sort(keys(var.workers)) :
+    k => cidrhost(var.private_network_subnet_range, 3 + idx)
+  }
   worker_ips = [
-    for s in values(hcloud_server.worker_server) : tolist(s.network)[0].ip
+    for k in sort(keys(var.workers)) : local.worker_ip_by_key[k]
   ]
   talos_nodes = concat([local.cp_ip], local.worker_ips)
 }
@@ -49,6 +53,7 @@ resource "hcloud_server" "controlplane_server" {
   }
   network {
     network_id = hcloud_network.private_network.id
+    ip         = local.cp_ip
   }
   depends_on = [
     hcloud_network_route.default_via_nat,
@@ -99,11 +104,13 @@ resource "hcloud_server" "worker_server" {
   }
   network {
     network_id = hcloud_network.private_network.id
+    ip         = local.worker_ip_by_key[each.key]
   }
   depends_on = [
     hcloud_network_subnet.private_network_subnet,
     hcloud_load_balancer.controlplane_load_balancer,
-  hcloud_server.controlplane_server]
+    hcloud_server.controlplane_server
+  ]
 }
 
 data "talos_client_configuration" "all" {

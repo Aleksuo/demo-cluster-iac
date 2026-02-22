@@ -13,6 +13,7 @@ in
     pkgs.git
     pkgs.kubectl
     pkgs.kubectx
+    pkgs.openssl
     talosctlPkgs.talosctl
     pkgs.packer
     pkgs.gitleaks
@@ -34,6 +35,11 @@ in
   languages.opentofu.package = otfPkgs.opentofu;
 
   languages.helm.enable = true;
+  languages.javascript.enable = true;
+
+  scripts."sandbox:opencode".exec = ''
+    docker sandbox run opencode
+  '';
 
   scripts.pack-image.exec = ''
     secretspec run -- packer init ./packer
@@ -53,6 +59,7 @@ in
     tofu -chdir=infra output -raw talosconfig > ./.talosconfig
     talosctl --talosconfig ./.talosconfig kubeconfig --merge --force
     ./scripts/bootstrap-cilium.sh
+    ./scripts/bootstrap-internal-gateway.sh
     secretspec run -- ./scripts/bootstrap-hetzner-ccm.sh
     talosctl --talosconfig ./.talosconfig health
   '';

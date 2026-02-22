@@ -14,7 +14,7 @@ flowchart LR
     subgraph cluster["Talos Kubernetes Cluster"]
       cp["Control Plane Nodes"]
       workers["Worker Nodes"]
-      gateway["Cilium Gateway API<br/>internal-gateway<br/>30080 / 30443"]
+      gateway["Cilium Gateway API<br/>internal-gateway"]
     end
   end
 

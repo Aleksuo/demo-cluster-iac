@@ -59,7 +59,6 @@ in
     talosctl --talosconfig ./.talosconfig kubeconfig --merge --force
     ./scripts/bootstrap-cilium.sh
     ./scripts/bootstrap-internal-gateway.sh
-    secretspec run -- ./scripts/bootstrap-hetzner-ccm.sh
     talosctl --talosconfig ./.talosconfig health
   '';
 

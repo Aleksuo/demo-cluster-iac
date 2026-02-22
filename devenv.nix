@@ -35,7 +35,6 @@ in
   languages.opentofu.package = otfPkgs.opentofu;
 
   languages.helm.enable = true;
-  languages.javascript.enable = true;
 
   scripts."sandbox:opencode".exec = ''
     docker sandbox run opencode

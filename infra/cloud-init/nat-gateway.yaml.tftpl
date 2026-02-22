@@ -32,9 +32,6 @@ runcmd:
 
     iptables -P FORWARD ACCEPT
     iptables -t nat -A POSTROUTING -s "$SUBNET" -o "$PUB_IFACE" -j MASQUERADE
-    # Keep TCP segments below Tailscale path MTU for forwarded subnet traffic.
-    iptables -t mangle -A FORWARD -i tailscale0 -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1200
-    iptables -t mangle -A FORWARD -o tailscale0 -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1200
 
     netfilter-persistent save
     systemctl enable --now dnsmasq

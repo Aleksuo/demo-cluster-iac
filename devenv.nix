@@ -59,6 +59,7 @@ in
     talosctl --talosconfig ./.talosconfig kubeconfig --merge --force
     ./scripts/bootstrap-cilium.sh
     ./scripts/bootstrap-internal-gateway.sh
+    ./scripts/bootstrap-argocd.sh
     talosctl --talosconfig ./.talosconfig health
   '';
 

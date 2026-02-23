@@ -1,0 +1,23 @@
+argo-cd:
+  global:
+    domain: argocd.internal.aleksuo.dev
+  configs:
+    params:
+      # Tls termination is done at the gateway
+      server.insecure: "true"
+    # Enable readonly mode with anonymous user access.
+    # This is fine as long as access requires tailnet.
+    cm:
+      users.anonymous.enabled: true
+      admin.enabled: false
+    rbac:
+      policy.default: role:readonly
+  server:
+    httproute:
+      enabled: true
+      parentRefs:
+        - name: internal-gateway
+          namespace: internal-gateway
+          sectionName: https 
+      hostnames:
+        - argocd.internal.aleksuo.dev

@@ -58,6 +58,7 @@ in
     tofu -chdir=infra output -raw talosconfig > ./.talosconfig
     talosctl --talosconfig ./.talosconfig kubeconfig --merge --force
     ./scripts/bootstrap-cilium.sh
+    ./scripts/bootstrap-metrics.sh
     ./scripts/bootstrap-internal-gateway.sh
     ./scripts/bootstrap-argocd.sh
     talosctl --talosconfig ./.talosconfig health

@@ -12,6 +12,8 @@ machine:
     nodeIP:
       validSubnets:
         - ${subnet}
+    extraArgs:
+      rotate-server-certificates: true
 
   time:
     servers:

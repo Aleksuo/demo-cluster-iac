@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kubelet-serving-certificate-approver
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-9"
+spec:
+  project: platform
+  source:
+    repoURL: https://github.com/Aleksuo/demo-cluster-iac.git
+    targetRevision: HEAD
+    path: kubernetes/addons/kubelet-serving-certificate-approver
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kubelet-serving-cert-approver
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

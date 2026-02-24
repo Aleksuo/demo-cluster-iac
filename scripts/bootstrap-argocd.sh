@@ -9,3 +9,5 @@ helm upgrade --install argocd kubernetes/addons/argocd \
 
 kubectl -n argocd rollout status deploy/argocd-server
 kubectl -n argocd get pods
+
+kubectl apply -f kubernetes/argocd/bootstrap

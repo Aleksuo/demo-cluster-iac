@@ -1,19 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: platform
+  name: platform-system
   namespace: argocd
 spec:
-  description: Platform addons managed by Argo CD
+  description: System addons managed by Argo CD
   sourceRepos:
     - https://github.com/Aleksuo/demo-cluster-iac.git
   destinations:
     - server: https://kubernetes.default.svc
-      namespace: argocd
+      namespace: kube-system
     - server: https://kubernetes.default.svc
-      namespace: internal-gateway
-    - server: https://kubernetes.default.svc
-      namespace: kubelet-serving-cert-approver
+      namespace: cilium-secrets
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'
@@ -21,4 +19,4 @@ spec:
     - group: '*'
       kind: '*'
   orphanedResources:
-    warn: true
+    warn: false

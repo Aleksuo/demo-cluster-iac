@@ -16,6 +16,10 @@ spec:
       namespace: internal-gateway
     - server: https://kubernetes.default.svc
       namespace: kubelet-serving-cert-approver
+    - server: https://kubernetes.default.svc
+      namespace: cilium-secrets
+    - server: https://kubernetes.default.svc
+      namespace: cilium-system
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'

@@ -1,5 +1,6 @@
 # Recommended values from https://docs.siderolabs.com/kubernetes-guides/cni/deploying-cilium#method-1:-helm-install
 cilium:
+  namespaceOverride: "cilium-system"
   k8sServiceHost: "localhost"
   k8sServicePort: 7445
   ipam:

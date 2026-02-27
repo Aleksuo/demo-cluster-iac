@@ -1,0 +1,48 @@
+external-secrets:
+  installCRDs: true
+  processClusterStore: true
+  processClusterExternalSecret: true
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 20m
+      memory: 64Mi
+    limits:
+      memory: 256Mi
+  serviceMonitor:
+    enabled: false
+  # Infisical provider configuration:
+  #   apiVersion: v1
+  #   kind: Secret
+  #   metadata:
+  #     name: infisical-universal-auth
+  #     namespace: external-secrets
+  #   type: Opaque
+  #   stringData:
+  #     clientId: <your-client-id>
+  #     clientSecret: <your-client-secret>
+  extraObjects:
+    - apiVersion: external-secrets.io/v1
+      kind: ClusterSecretStore
+      metadata:
+        name: infisical
+      spec:
+        provider:
+          infisical:
+            hostAPI: https://app.infisical.com
+            auth:
+              universalAuthCredentials:
+                clientId:
+                  name: infisical-universal-auth
+                  key: clientId
+                  namespace: external-secrets
+                clientSecret:
+                  name: infisical-universal-auth
+                  key: clientSecret
+                  namespace: external-secrets
+            secretsScope:
+              projectSlug: demo-cluster-q8-du
+              environmentSlug: dev
+              secretsPath: /
+              recursive: false
+              expandSecretReferences: true

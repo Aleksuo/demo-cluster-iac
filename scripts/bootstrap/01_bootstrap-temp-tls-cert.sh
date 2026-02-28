@@ -11,7 +11,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-kubectl create namespace "${INTERNAL_GATEWAY_NAMESPACE}"
+kubectl create namespace "${INTERNAL_GATEWAY_NAMESPACE}" --dry-run=client -o yaml | kubectl apply -f -
 
 openssl req -x509 -newkey rsa:2048 -sha256 -nodes -days 365 \
   -keyout "${tmpdir}/tls.key" \

@@ -54,6 +54,7 @@ in
   '';
 
   scripts.apply.exec = ''
+    set -euo pipefail
     secretspec run -- tofu -chdir=infra apply
     tofu -chdir=infra output -raw talosconfig > ./.talosconfig
     talosctl --talosconfig ./.talosconfig kubeconfig --merge --force

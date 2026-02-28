@@ -57,7 +57,7 @@ in
     secretspec run -- tofu -chdir=infra apply
     tofu -chdir=infra output -raw talosconfig > ./.talosconfig
     talosctl --talosconfig ./.talosconfig kubeconfig --merge --force
-    ./scripts/bootstrap.sh
+    secretspec run -- ./scripts/bootstrap.sh
     talosctl --talosconfig ./.talosconfig health
   '';
 

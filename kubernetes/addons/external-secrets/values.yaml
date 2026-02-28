@@ -29,7 +29,7 @@ external-secrets:
       spec:
         provider:
           infisical:
-            hostAPI: https://app.infisical.com
+            hostAPI: https://eu.infisical.com
             auth:
               universalAuthCredentials:
                 clientId:
